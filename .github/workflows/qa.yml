@@ -1,0 +1,51 @@
+name: QA pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  harness:
+    name: Harness (Gherkin, coverage, traceability)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/validate.mjs --json reports/validation.json
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-report
+          path: reports/validation.json
+
+  e2e:
+    name: Playwright (${{ matrix.suite }})
+    needs: harness
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [smoke, regression]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: npm run typecheck
+      - run: npx playwright test --grep @${{ matrix.suite }}
+      - if: failure()
+        run: npm run triage && cat reports/triage.md >> "$GITHUB_STEP_SUMMARY"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.suite }}
+          path: |
+            reports/
+            test-results/
+          retention-days: 14

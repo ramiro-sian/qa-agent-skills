@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demo Shop - Products</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="cart.html" class="cart-link">Cart <span data-testid="cart-count" class="badge" hidden></span></a>
+    <button type="button" id="logout">Log out</button>
+  </header>
+  <main>
+    <h1>Products</h1>
+    <ul id="products" class="products"></ul>
+  </main>
+  <script src="app.js"></script>
+  <script>DemoShop.initCatalog();</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "qa-agent-skills",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Claude Agent Skills for quality engineering: requirements to Gherkin to Playwright (TypeScript), gated by a deterministic harness.",
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/validate.mjs --json reports/validation.json",
+    "typecheck": "tsc --noEmit",
+    "test": "playwright test",
+    "test:smoke": "playwright test --grep @smoke",
+    "triage": "node scripts/triage.mjs",
+    "check": "npm run validate && npm run typecheck && npm test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}
